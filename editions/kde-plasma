@@ -27,6 +27,8 @@ kwallet-pam
 kwayland-integration
 plasma-wayland-protocols
 kwin
+maliit-framework
+maliit-keyboard
 plasma-desktop
 plasma-nm
 plasma-pa
