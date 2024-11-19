@@ -35,4 +35,4 @@ jobs:
           git fetch upstream ${{ env.NEW_REF }}:${{ env.NEW_REF }} --depth=10000
           git rebase ${{ env.NEW_REF }}
           git log -5
-          git push
+          git push -f
