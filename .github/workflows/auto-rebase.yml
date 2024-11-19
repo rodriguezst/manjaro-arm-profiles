@@ -1,0 +1,38 @@
+name: rebase-and-release
+
+env:
+  CURR_REPO: 'rodriguezst/manjaro-arm-profiles'
+  CURR_REF: 'rebased'
+  NEW_REPO: 'https://gitlab.manjaro.org/manjaro-arm/applications/arm-profiles.git'
+  NEW_REF: 'master'
+
+on:
+  workflow_dispatch:
+  push:
+  #schedule: 
+    #- cron: '0 0 * * *'
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CURR_REPO }}
+          ref: ${{ env.CURR_REF }}
+          fetch-depth: 1000
+
+      - name: Rebase
+        shell: bash
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          UPSTREAM=${{ env.NEW_REPO }}
+          if [ ! $(echo ${UPSTREAM} | egrep '^(http|git@)') ]; then
+            UPSTREAM="https://github.com/"${UPSTREAM}.git
+          fi;
+          git remote add upstream ${UPSTREAM}
+          git fetch upstream ${{ env.NEW_REF }}:${{ env.NEW_REF }} --depth=10000
+          git rebase ${{ env.NEW_REF }}
+          git log -5
+          git push
